@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="net.mydreamy.steamboiler.jnlp">
+  <information>
+    <title>net.mydreamy.steamboiler</title>
+    <vendor>UM Software Engineering Lab</vendor>
+    <description>Sample JavaFX 2.0 application.</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="net.mydreamy.steamboiler.jar" size="62129" download="eager" />
+  </resources>
+<security>
+  <all-permissions/>
+</security>
+  <jfx:javafx-desc  width="1078" height="920" main-class="application.Main"  name="Steam Boiler Simulator" />
+  <update check="background"/>
+</jnlp>

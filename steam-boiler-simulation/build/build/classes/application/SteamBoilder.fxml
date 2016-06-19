@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="881.0" prefWidth="1089.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SteamBoilderController">
+   <left>
+      <AnchorPane>
+         <children>
+            <VBox prefHeight="740.0" prefWidth="227.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <TitledPane collapsible="false" text="Parameters" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
+                     <content>
+                        <GridPane alignment="CENTER" BorderPane.alignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="105.0" minWidth="10.0" prefWidth="53.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="108.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="33.0" minHeight="10.0" vgrow="NEVER" />
+                            <RowConstraints maxHeight="34.0" minHeight="0.0" prefHeight="29.0" vgrow="NEVER" />
+                              <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="32.0" vgrow="NEVER" />
+                            <RowConstraints maxHeight="100.0" minHeight="0.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="151.0" minHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="128.0" minHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="88.0" minHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="105.0" minHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="86.0" minHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="86.0" minHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="86.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="90.0" minHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="90.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="98.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="C:" GridPane.rowIndex="1" />
+                              <Label text="M1:" GridPane.rowIndex="3" />
+                              <Label text="M2:" GridPane.rowIndex="4" />
+                              <TextField fx:id="capacity" prefHeight="0.0" prefWidth="118.0" text="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="m1" text="10" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="m2" text="90" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label text="N1:" GridPane.rowIndex="5" />
+                              <TextField fx:id="n1" text="30" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="N2:" GridPane.rowIndex="6" />
+                              <Label text="B1:" GridPane.rowIndex="7" />
+                              <Label text="B2:" GridPane.rowIndex="8" />
+                              <Label text="W:" GridPane.rowIndex="11" />
+                              <Label text="UP:" GridPane.rowIndex="12" />
+                              <Label text="DOWN:" GridPane.rowIndex="13" />
+                              <TextField fx:id="n2" text="70" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField fx:id="op1" text="45" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <TextField fx:id="op2" text="55" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <TextField fx:id="w" text="9" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <TextField fx:id="up" text="1" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <TextField fx:id="down" text="1" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                              <Label text="PN:" GridPane.rowIndex="9" />
+                              <TextField fx:id="pn" text="5" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <Label text="Interval:" />
+                              <Label text="PQ:" GridPane.rowIndex="10" />
+                              <TextField fx:id="pumpone" text="2" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <TextField fx:id="vmin" text="1" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                              <Label text="VMIN:" GridPane.rowIndex="14" />
+                              <TextField fx:id="ftru" text="3" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                              <Label text="FTRU:" GridPane.rowIndex="15" />
+                              <Slider fx:id="interval" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5.0" GridPane.columnIndex="1" />
+                              <Label text="INITQ:" GridPane.rowIndex="2" />
+                              <TextField fx:id="initq" text="50" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="FTRD:" GridPane.rowIndex="16" />
+                              <TextField fx:id="ftrd" text="8" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+               </children>
+            </VBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </AnchorPane>
+   </left>
+   <top>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+            <Button fx:id="startProcessesButton" mnemonicParsing="false" onAction="#startProcessesFired" text="Start Processes" />
+            <Button fx:id="emergencyStopButton" mnemonicParsing="false" onAction="#emergencyStopFired" text="Emergency Stop" />
+            <Button fx:id="brokeWaterSensorButton" mnemonicParsing="false" onAction="#rescueModeFired" text="Broke Water Sensor" />
+            <Button fx:id="repaireWaterSensorButton" mnemonicParsing="false" onAction="#repairedWaterSensorFired" text="Repaire Water Sensor" />
+        </items>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </ToolBar>
+   </top>
+   <bottom>
+      <VBox prefHeight="267.0" prefWidth="1053.0">
+         <children>
+            <TitledPane collapsible="false" text="Statistics">
+               <content>
+                  <HBox prefHeight="200.0">
+                     <children>
+                        <LineChart fx:id="qchart" horizontalGridLinesVisible="false" prefHeight="200.0" prefWidth="350.0" title="Quantity Chart" verticalGridLinesVisible="false">
+                          <xAxis>
+                            <NumberAxis label="Time" prefHeight="40.0" prefWidth="276.0" side="BOTTOM" tickLabelGap="0.0" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis label="Quantity" prefHeight="130.0" prefWidth="44.0" side="LEFT" tickLabelGap="0.0">
+                                 <tickLabelFont>
+                                    <Font size="9.0" />
+                                 </tickLabelFont>
+                              </NumberAxis>
+                          </yAxis>
+                        </LineChart>
+                        <LineChart fx:id="vchart" horizontalGridLinesVisible="false" prefHeight="200.0" prefWidth="350.0" title="Steam Chart" verticalGridLinesVisible="false">
+                          <xAxis>
+                            <NumberAxis label="Time" prefHeight="45.0" prefWidth="271.0" side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis label="Steam" side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                        <LineChart fx:id="pchart" horizontalGridLinesVisible="false" prefHeight="159.0" prefWidth="350.0" title="Water Income Chart" verticalGridLinesVisible="false">
+                          <xAxis>
+                            <NumberAxis label="Time" prefHeight="44.0" prefWidth="271.0" side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis label="Water" side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                     </children>
+                  </HBox>
+               </content>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" />
+               </VBox.margin>
+            </TitledPane>
+            <ToolBar prefHeight="35.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+               <items>
+                  <Label fx:id="systemstate" text="System Status">
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </Label>
+               </items>
+            </ToolBar>
+         </children>
+      </VBox>
+   </bottom>
+   <center>
+      <TitledPane collapsible="false" prefHeight="564.0" prefWidth="701.0" text="Simulator" BorderPane.alignment="CENTER">
+         <content>
+            <AnchorPane fx:id="simulator" prefHeight="703.0" prefWidth="699.0">
+               <children>
+                  <ProgressIndicator fx:id="ptimer" layoutX="79.0" layoutY="53.0" prefHeight="76.0" prefWidth="67.0" progress="0.0" />
+                  <Label layoutX="85.0" layoutY="21.0" text="Timer">
+                     <font>
+                        <Font size="22.0" />
+                     </font></Label>
+               </children>
+            </AnchorPane>
+         </content>
+         <BorderPane.margin>
+            <Insets bottom="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </TitledPane>
+   </center>
+   <right>
+      <VBox prefHeight="574.0" prefWidth="220.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="5.0" right="5.0" top="5.0" />
+         </padding>
+         <children>
+            <TitledPane collapsible="false" prefHeight="139.0" prefWidth="138.0" text="Sensors Status">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="107.0" prefWidth="0.0">
+                     <children>
+                        <GridPane layoutX="36.0" layoutY="-2.0" prefHeight="107.0" prefWidth="223.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="84.0" minWidth="0.0" prefWidth="23.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="0.0" prefWidth="31.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="369.0" minWidth="10.0" prefWidth="115.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="43.0" minHeight="0.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="47.0" minHeight="4.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="q:" />
+                              <Label text="v:" GridPane.rowIndex="1" />
+                              <Label text="p:" GridPane.rowIndex="2" />
+                              <ProgressBar fx:id="qbar" prefHeight="23.0" prefWidth="147.0" progress="0.0" GridPane.columnIndex="2" />
+                              <ProgressBar fx:id="vbar" prefHeight="23.0" prefWidth="148.0" progress="0.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <ProgressBar fx:id="pbar" prefHeight="23.0" prefWidth="147.0" progress="0.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label fx:id="qlabel" text="0" GridPane.columnIndex="1" />
+                              <Label fx:id="vlabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="plabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </TitledPane>
+            <TitledPane animated="false" collapsible="false" prefHeight="132.0" prefWidth="299.0" text="Invarients">
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+               <content>
+                  <AnchorPane prefHeight="100.0" prefWidth="57.0">
+                     <children>
+                        <GridPane layoutX="24.0" layoutY="24.0" prefHeight="100.0" prefWidth="213.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="125.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="99.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="38.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label contentDisplay="CENTER" text="M1&lt;=q&lt;=M2" />
+                              <Label contentDisplay="RIGHT" prefHeight="21.0" prefWidth="109.0" text="N1&lt;=q&lt;=N2" GridPane.rowIndex="1" />
+                              <Button fx:id="basicinv" defaultButton="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="86.0" text="TRUE" GridPane.columnIndex="1" />
+                              <Button fx:id="normalinv" defaultButton="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="87.0" text="TRUE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" collapsible="false" prefHeight="284.0" prefWidth="196.0" text="Process Status">
+               <content>
+                  <AnchorPane prefHeight="252.0" prefWidth="141.0">
+                     <children>
+                        <GridPane fx:id="gp" alignment="CENTER" layoutX="36.0" layoutY="36.0" prefHeight="252.0" prefWidth="213.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="160.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="89.0" minWidth="10.0" prefWidth="29.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="149.0" text="Steam Boiler" />
+                              <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Control System" GridPane.rowIndex="5">
+                                 <effect>
+                                    <ColorAdjust />
+                                 </effect></Button>
+                              <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="149.0" text="Water Sensor" GridPane.rowIndex="1" />
+                              <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Pump Sensor" GridPane.rowIndex="3" />
+                              <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Pump Controller" GridPane.rowIndex="4" />
+                              <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="150.0" text="Steam Sensor" GridPane.rowIndex="2" />
+                           </children>
+                           <opaqueInsets>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </opaqueInsets>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </TitledPane>
+         </children>
+      </VBox>
+   </right>
+</BorderPane>
