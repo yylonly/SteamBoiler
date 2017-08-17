@@ -35,6 +35,7 @@ const PUMPQ = PN*PQ
 range Q = 0..C
 range P = 0..PUMPQ
 range V = 0..W
+range INDEX = 0..5
 
 
 //Manual Control
@@ -46,46 +47,52 @@ TIMER = (start -> TIME),
 
 //BOILER Model  
 STEAMBOILER = (start->STEAMBOILERUN[60][0][0]),
+
 	STEAMBOILERUN[q:Q][v:V][p:P] = (stop -> STEAMBOILER 
 		  | getWaterQuantity[q] -> getSteamRate[v] -> getPumpRate[p] -> STEAMBOILERUN[q][v][p] 
-		  | pumpOn -> tick -> tick -> tick -> tick -> tick -> STEAMBOILERUN[q][v][p+PQ] 
-          | pumpOff -> STEAMBOILERUN[q][v][p-PQ]
-		  | keep -> STEAMBOILERUN[q][v][p]
+		  | pumpOn -> STEAMBOILERLOOP[q][v][p][5]
+          | pumpOff -> STEAMBOILERLOOP[q][v][p-PQ][1]
+		  | keep -> STEAMBOILERLOOP[q][v][p][1]),
+		  
+	STEAMBOILERLOOP[q:Q][v:V][p:P][i:INDEX] = (
+            when (i == 0)
+			 boilingout[q][v][p] -> STEAMBOILERUN[q][v][p]
+          | when (i > 0)
+             boiling[q][v][p] -> tick ->
+				 (  when (q >= M2 )
+					 boilingAboveM2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][VMINOUT][p][i-1]
 
-          | tick -> boiling[q][v][p] ->
- 	      (  when (q >= M2 )
-    	     boilingAboveM2[q][v][p] -> STEAMBOILERUN[q+(p-v)][VMINOUT][p]
+				  | when (N2 <= q && q < M2)
+					 boilingN2toM2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][VMINOUT][p][i-1]
 
-          | when (N2 <= q && q < M2)
-    	     boilingN2toM2[q][v][p] -> STEAMBOILERUN[q+(p-v)][VMINOUT][p]
+				  | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) < W)
+					 boilingBEST2toN2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v+UP][p][i-1]
 
- 	      | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) < W)
-    	     boilingBEST2toN2[q][v][p] -> STEAMBOILERUN[q+(p-v)][v+UP][p]
+				  | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) >= W)
+					 boilingBEST2toN2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v][p][i-1]
 
- 	      | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) >= W)
-    	     boilingBEST2toN2[q][v][p] -> STEAMBOILERUN[q+(p-v)][v][p]
+				  | when (BEST2 < q && q < N2 && (p-v) >= 0)
+					 boilingBEST2toN2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v-DOWN][p][i-1]
 
-          | when (BEST2 < q && q < N2 && (p-v) >= 0)
-    	     boilingBEST2toN2[q][v][p] -> STEAMBOILERUN[q+(p-v)][v-DOWN][p]
+				  | when (BEST1 <= q && q <= BEST2)
+					 boilingBEST1toBEST2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][W][p][i-1]
 
- 		  | when (BEST1 <= q && q <= BEST2)
-    	     boilingBEST1toBEST2[q][v][p] -> STEAMBOILERUN[q+(p-v)][W][p]
+				  | when (N1 <= q && q < BEST1 && (p-v) < 0)
+					 boilingN1toBEST1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v-DOWN][p][i-1]
 
-          | when (N1 <= q && q < BEST1 && (p-v) < 0)
-    	     boilingN1toBEST1[q][v][p] -> STEAMBOILERUN[q+(p-v)][v-DOWN][p]
+				  | when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) < W)
+					 boilingN1toBEST1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v+UP][p][i-1]
 
-          | when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) < W)
-    	     boilingN1toBEST1[q][v][p] -> STEAMBOILERUN[q+(p-v)][v+UP][p]
+				  | when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) >= W)
+					 boilingN1toBEST1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v][p][i-1]
 
-          | when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) >= W)
-    	     boilingN1toBEST1[q][v][p] -> STEAMBOILERUN[q+(p-v)][v][p]
+				  | when (M1 <= q && q < N1)
+					 boilingM1toN1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][VMINOUT][p][i-1]
 
-          | when (M1 <= q && q < N1)
-    	     boilingM1toN1[q][v][p] -> STEAMBOILERUN[q+(p-v)][VMINOUT][p]
-
-          | when (q < M1)
-    	     boilingLM1[q][v][p] -> STEAMBOILERUN[q+(p-v)][0][p]
-          )).
+				  | when (q < M1)
+					 boilingLM1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][0][p][i-1]
+				 )
+		  ).
 
 
 //Sensors
@@ -104,7 +111,11 @@ PUMPSENSOR = (start -> PUMPSENSORRUN),
 
 //Pump Controler
 PUMPCONTROLER = (start -> PUMPCONTROLERUN),
-	PUMPCONTROLERUN = (stop -> PUMPCONTROLER | pumpcontrollerchan.receive[o:PUMPORDER] -> (when (o == ON) tick -> tick -> tick -> tick -> pumpOn -> PUMPCONTROLERUN | when (o == OFF) pumpOff -> PUMPCONTROLERUN | when (o == KEEP) keep -> PUMPCONTROLERUN)).
+	PUMPCONTROLERUN = (stop -> PUMPCONTROLER | pumpcontrollerchan.receive[o:PUMPORDER] -> 
+			(when (o == ON) pumpOn -> PUMPCONTROLERUN 
+			| when (o == OFF) pumpOff -> PUMPCONTROLERUN 
+			| when (o == KEEP) keep -> PUMPCONTROLERUN
+			)).
  
 //Control System - need modified to multi pump on/off 
 CONTROLSYSTEM = (start -> SYSCONTROLRUN[0]),
