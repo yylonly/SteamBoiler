@@ -61,43 +61,43 @@ STEAMBOILER = (start->STEAMBOILERUN[QINIT][0][0][0]),
 		| tick -> boiling[q][v][p] -> 						// time elapses one second
 
  	      		( when (q >= M2 )
-    	  		   boilingAboveM2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][VMINOUT][p][t]
+    	  		   boilingAboveM2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][VMINOUT][p][t]
 
       		    | when (N2 <= q && q < M2)
-    			     boilingN2toM2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][VMINOUT][p][t]
+    			     boilingN2toM2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][VMINOUT][p][t]
 
  	 		    | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) < W)
-    			     boilingBEST2toN21[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v+UP][p][t]
+    			     boilingBEST2toN21[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v+UP][p][t]
 
 		    	| when (BEST2 < q && q < N2 && (p-v) == 0 && v == 0)
-    			     boilingBEST2toN23[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v+UP][p][t]
+    			     boilingBEST2toN23[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v+UP][p][t]
 
  	 		    | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) >= W)
-    			     boilingBEST2toN22[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v][p][t]
+    			     boilingBEST2toN22[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v][p][t]
 
      		    | when (BEST2 < q && q < N2 && (p-v) > 0 && v > VMINOUT)
-    			     boilingBEST2toN23[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v-DOWN][p][t]
+    			     boilingBEST2toN23[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v-DOWN][p][t]
 
      		    | when (BEST2 < q && q < N2 && (p-v) > 0 && v <= VMINOUT)
-    			     boilingBEST2toN23[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v][p][t]
+    			     boilingBEST2toN23[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v][p][t]
 
  				| when (BEST1 <= q && q <= BEST2)
-    			     boilingBEST1toBEST2[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][W][p][t]
+    			     boilingBEST1toBEST2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][W][p][t]
 
        		    | when (N1 <= q && q < BEST1 && (p-v) < 0)
-    			     boilingN1toBEST1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v-DOWN][p][t]
+    			     boilingN1toBEST1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v-DOWN][p][t]
 
         	    | when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) < W)
-    	     		 boilingN1toBEST1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v+UP][p][t]
+    	     		 boilingN1toBEST1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v+UP][p][t]
 
           		| when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) >= W)
-    	     		boilingN1toBEST1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][v][p][t]
+    	     		boilingN1toBEST1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v][p][t]
 
           		| when (M1 <= q && q < N1)
-    	     		boilingM1toN1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][VMINOUT][p][t]
+    	     		boilingM1toN1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][VMINOUT][p][t]
 
           		| when (q < M1)
-    	     		boilingLM1[q][v][p] -> STEAMBOILERLOOP[q+(p-v)][0][p][t]
+    	     		boilingLM1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][0][p][t]
           		)
 
 
