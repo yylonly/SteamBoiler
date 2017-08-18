@@ -51,7 +51,7 @@ TIMER = (start -> TIME),
 	TIME = (tick -> TIME | stop -> TIMER).
 
 //BOILER Model  
-STEAMBOILER = (start->STEAMBOILERUN[QINIT][0][0][0]),
+STEAMBOILER = (start->STEAMBOILERUN[QINIT][W][PUMPQ][0]),
 
 	STEAMBOILERUN[q:Q][v:V][p:P][t:PUMPMAXDELAY] = (stop -> STEAMBOILER 
 		| getWaterQuantity[q] -> getSteamRate[v] -> getPumpRate[p] -> STEAMBOILERUN[q][v][p][t]
@@ -118,13 +118,13 @@ STEAMBOILER = (start->STEAMBOILERUN[QINIT][0][0][0]),
 //	WATERSENSORRESCUE = (repaired -> WATERSENSORRUN | tick -> WATERSENSORRESCUE).
 
 WATERSENSOR = (start -> WATERSENSORRUN),
-	WATERSENSORRUN = (stop -> WATERSENSOR | tick -> tick -> tick -> tick -> tick -> getWaterQuantity[q:Q] -> waterchan.send[q] -> WATERSENSORRUN).
+	WATERSENSORRUN = (stop -> WATERSENSOR |  getWaterQuantity[q:Q] -> waterchan.send[q] -> tick -> tick -> tick -> tick -> tick -> WATERSENSORRUN).
 
 STEAMSENSOR = (start -> STEAMSENSORRUN),
-	STEAMSENSORRUN = (stop -> STEAMSENSOR | tick -> tick -> tick -> tick -> tick -> getSteamRate[v:V] -> steamchan.send[v] -> STEAMSENSORRUN).
+	STEAMSENSORRUN = (stop -> STEAMSENSOR | getSteamRate[v:V] -> steamchan.send[v] -> tick -> tick -> tick -> tick -> tick -> STEAMSENSORRUN).
 
 PUMPSENSOR = (start -> PUMPSENSORRUN),
-	PUMPSENSORRUN = (stop -> PUMPSENSOR | tick -> tick -> tick -> tick -> tick -> getPumpRate[p:P] -> pumpsensorchan.send[p] -> PUMPSENSORRUN).
+	PUMPSENSORRUN = (stop -> PUMPSENSOR | getPumpRate[p:P] -> pumpsensorchan.send[p] -> tick -> tick -> tick -> tick -> tick -> PUMPSENSORRUN).
 
 // Pump Controler
 			
@@ -132,48 +132,51 @@ PUMPSENSOR = (start -> PUMPSENSORRUN),
 // use the bit position to represent the time elapsing
 PUMPCONTROLLER = (start -> PUMPCONTROLLERUN),
 	PUMPCONTROLLERUN = (stop -> PUMPCONTROLLER 
-			| tick -> tick -> tick -> tick -> tick ->  pumpcontrollerchan.receive[o:PUMPORDER] -> 
-				( when (o == ON) pumpOn -> PUMPCONTROLLERUN
-				| when (o == OFF) pumpOff -> PUMPCONTROLLERUN
-				| when (o == KEEP) keep -> PUMPCONTROLLERUN
-				)
-			).
+			| pumpcontrollerchan.receive[o:PUMPORDER] -> 
+				( when (o == ON) pumpOn -> PUMPCONTROLLERTICK
+				| when (o == OFF) pumpOff  -> PUMPCONTROLLERTICK
+				| when (o == KEEP) keep  -> PUMPCONTROLLERTICK
+				) 
+			),
+
+	PUMPCONTROLLERTICK = (tick -> tick -> tick -> tick -> tick -> PUMPCONTROLLERUN).
  
 //Control System - need modified to multi pump on/off 
 CONTROLSYSTEM = (start -> SYSCONTROLRUN[OFF][0]),
 
-	SYSCONTROLRUN[po:PUMPORDER][lastq:Q] = (stop -> CONTROLSYSTEM | tick -> tick -> tick -> tick -> tick -> waterchan.receive[q:Q] -> steamchan.receive[v:V] -> pumpsensorchan.receive[p:P]  -> makedecision ->
+	SYSCONTROLRUN[po:PUMPORDER][lastq:Q] = (stop -> CONTROLSYSTEM | waterchan.receive[q:Q] -> steamchan.receive[v:V] -> pumpsensorchan.receive[p:P]  -> makedecision ->
    		  
 			 //---------------------- q < BEST1+FTRD -------------------------
 		   (when (q < BEST1+FTRD && p <= (PUMPQ-2*PQ))  
-				makedecisionon -> pumpcontrollerchan.send[ON] -> SYSCONTROLRUN[ON][q] |
+				makedecisionon -> pumpcontrollerchan.send[ON] -> CONTROLTICK[ON][q]  |
 
 			when (q < BEST1+FTRD && p == PUMPQ-PQ && po == OFF)  
-				makedecisionon -> pumpcontrollerchan.send[ON] -> SYSCONTROLRUN[ON][q]  |
+				makedecisionon -> pumpcontrollerchan.send[ON] -> CONTROLTICK[ON][q]  |
 
 			when (q < BEST1+FTRD && p <= PUMPQ-PQ && po == ON)  
-				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> SYSCONTROLRUN[KEEP][q]  |
+				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> CONTROLTICK[KEEP][q] |
 
 			when (q < BEST1+FTRD && p == PUMPQ-PQ && po == KEEP)  
-				makedecisionon -> pumpcontrollerchan.send[ON] -> SYSCONTROLRUN[ON][q]  |
+				makedecisionon -> pumpcontrollerchan.send[ON] -> CONTROLTICK[ON][q]  |
 
 			when (q < BEST1+FTRD && p == PUMPQ)  
-				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> SYSCONTROLRUN[KEEP][q]  |
+				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> CONTROLTICK[KEEP][q]  |
 
 			//--------------------- q > BEST2-FTRU --------------------------
 
 			when (q > BEST2-FTRU && (p-v) >= 0 && p > 0) 
-				makedecisionoff -> pumpcontrollerchan.send[OFF] -> SYSCONTROLRUN[OFF][q]  | 
+				makedecisionoff -> pumpcontrollerchan.send[OFF] -> CONTROLTICK[OFF][q] | 
 
             when (q > BEST2-FTRU && v >= 0 && p == 0) 
-				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> SYSCONTROLRUN[KEEP][q]  |
+				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> CONTROLTICK[KEEP][q] |
 
 			//----------------BEST1+FTRD <= q && q <= BEST2-FTRU--------------
 
 	        when (BEST1+FTRD <= q && q <= BEST2-FTRU) 
-				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> SYSCONTROLRUN[KEEP][q]  
-		   )).
+				makedecisionnone -> pumpcontrollerchan.send[KEEP] -> CONTROLTICK[KEEP][q] 
+		   )),
 
+	CONTROLTICK[o:PUMPORDER][q:Q] = (tick -> tick -> tick -> tick -> tick -> SYSCONTROLRUN[o][q]).
 
 
 
