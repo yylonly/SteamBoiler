@@ -189,13 +189,13 @@ CONTROLSYSTEM = (start -> SYSCONTROLRUN[OFF][0]),
 ||OPTIMIZATIONSYSTEM = (ALLSYSTEM || OPTIMIZATION).
 
 //Progress
-//progress STEAMBOILERWorking = {boiling[q:Q][v:V][p:P], start, stop}
-//progress CSWorking = {makedecision, start, stop}
-//progress WaterSensorWorking = {getWaterQuantity[q:Q], start, stop}
-//progress SteamSensorWorking = {getSteamRate[v:V], start, stop}
-//progress PumpSensorWorking = {getPumpRate[v:V], start, stop}
-//progress PumpControllerWorking = {pumpOn, pumpOff, keep, start, stop}
-
+progress STEAMBOILERWorking = {boiling[q:Q][v:V][p:P], start, stop, tick}
+progress CSWorking = {makedecision, start, stop, tick}
+progress WaterSensorWorking = {getWaterQuantity[q:Q], start, stop, tick}
+progress SteamSensorWorking = {getSteamRate[v:V], start, stop, tick}
+progress PumpSensorWorking = {getPumpRate[v:V], start, stop, tick}
+progress PumpControllerWorking = {pumpOn, pumpOff, keep, start, stop, tick}
+progress TIMERWorking = {start, stop, tick}
 
 //Proerties
 
