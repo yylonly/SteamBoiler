@@ -50,50 +50,45 @@ TIMER = (start -> TIME),
 //BOILER Model  
 STEAMBOILER = (start->STEAMBOILERUN[60][0][0]),
 
-	STEAMBOILERUN[q:Q][v:V][p:P] = (stop -> STEAMBOILER 
-		  | getWaterQuantity[q] -> getSteamRate[v] -> getPumpRate[p] -> STEAMBOILERUN[q][v][p] 
-		  | pumpOn -> STEAMBOILERUN[q][v][p+PQ]			// here pumpOn is not a message, but a state change
-          | pumpOff -> STEAMBOILERUN[q][v][p-PQ]
-		  | keep -> STEAMBOILERUN[q][v][p]
-		  | tick -> STEAMBOILERTICK[q][v][p]			// time elapses one second
-		  ),
-		  
-	STEAMBOILERTICK[q:Q][v:V][p:P] = (                     
-		 boiling[q][v][p] -> 
-			 (  when (q >= M2 )
-				 boilingAboveM2[q][v][p] -> STEAMBOILERTICK[q+(p-v)][VMINOUT][p]
-
-			  | when (N2 <= q && q < M2)
-				 boilingN2toM2[q][v][p] -> STEAMBOILERTICK[q+(p-v)][VMINOUT][p]
-
-			  | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) < W)
-				 boilingBEST2toN2[q][v][p] -> STEAMBOILERTICK[q+(p-v)][v+UP][p]
-
-			  | when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) >= W)
-				 boilingBEST2toN2[q][v][p] -> STEAMBOILERTICK[q+(p-v)][v][p]
-
-			  | when (BEST2 < q && q < N2 && (p-v) >= 0)
-				 boilingBEST2toN2[q][v][p] -> STEAMBOILERTICK[q+(p-v)][v-DOWN][p]
-
-			  | when (BEST1 <= q && q <= BEST2)
-				 boilingBEST1toBEST2[q][v][p] -> STEAMBOILERTICK[q+(p-v)][W][p]
-
-			  | when (N1 <= q && q < BEST1 && (p-v) < 0)
-				 boilingN1toBEST1[q][v][p] -> STEAMBOILERTICK[q+(p-v)][v-DOWN][p]
-
-			  | when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) < W)
-				 boilingN1toBEST1[q][v][p] -> STEAMBOILERTICK[q+(p-v)][v+UP][p]
-
-			  | when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) >= W)
-				 boilingN1toBEST1[q][v][p] -> STEAMBOILERTICK[q+(p-v)][v][p]
-
-			  | when (M1 <= q && q < N1)
-				 boilingM1toN1[q][v][p] -> STEAMBOILERTICK[q+(p-v)][VMINOUT][p]
-
-			  | when (q < M1)
-				 boilingLM1[q][v][p] -> STEAMBOILERTICK[q+(p-v)][0][p]
-			 )
-		  ).
+	STEAMBOILERUN[q:Q][v:V][p:P][t:PUMPMAXDELAY] = (stop -> STEAMBOILER 
+		| getWaterQuantity[q] -> getSteamRate[v] -> getPumpRate[p] -> STEAMBOILERUN[q][v][p] 
+		| pumpOn -> STEAMBOILERUN[q][v][p][16+t] 			// 16 comes from 2^(PUMPDELAY-1); assme there is at most one ON message per second
+		| pumpOff -> STEAMBOILERUN[q][v][p-PQ][t]
+		| keep -> STEAMBOILERUN[q][v][p][t]
+		| tick -> boiling[q][v][p] -> 						// time elapses one second
+			( when (q >= M2 )
+				boilingAboveM2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][VMINOUT][p][t]
+			| when (N2 <= q && q < M2)
+				boilingN2toM2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][VMINOUT][p][t]
+			| when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) < W)
+				boilingBEST2toN2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v+UP][p][t]
+			| when (BEST2 < q && q < N2 && (p-v) < 0 && (v+UP) >= W)
+				boilingBEST2toN2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v][p][t]
+			| when (BEST2 < q && q < N2 && (p-v) >= 0)
+				boilingBEST2toN2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v-DOWN][p][t]
+			| when (BEST1 <= q && q <= BEST2)
+				boilingBEST1toBEST2[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][W][p][t]
+			| when (N1 <= q && q < BEST1 && (p-v) < 0)
+				boilingN1toBEST1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v-DOWN][p][t]
+			| when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) < W)
+				boilingN1toBEST1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v+UP][p][t]
+			| when (N1 <= q && q < BEST1 && (p-v) >= 0 && (v+UP) >= W)
+				boilingN1toBEST1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][v][p][t]
+			| when (M1 <= q && q < N1)
+				boilingM1toN1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][VMINOUT][p][t]
+			| when (q < M1)
+				boilingLM1[q][v][p] -> STEAMBOILERPUMP[q+(p-v)][0][p][t]
+			)
+		),
+		  		  
+	STEAMBOILERPUMP[q:Q][v:V][p:P][t:PUMPMAXDELAY] = (
+		when (t == 0)
+			pumping -> STEAMBOILERUN[q][v][p][t]
+		| when (t != 0 && t % 2 == 0)						// move one bit right
+			pumping -> STEAMBOILERUN[q][v][p][t/2]					
+		| when (t != 0 && t % 2 != 0)						// the rightmost one is 1, representing pump increase
+			pumping -> STEAMBOILERUN[q][v][p][(t-1)/2]
+		).
 
 
 //Sensors
@@ -110,27 +105,17 @@ STEAMSENSOR = (start -> STEAMSENSORRUN),
 PUMPSENSOR = (start -> PUMPSENSORRUN),
 	PUMPSENSORRUN = (stop -> PUMPSENSOR | tick -> tick -> tick -> tick -> tick -> getPumpRate[p:P] -> pumpsensorchan.send[p] -> PUMPSENSORRUN).
 
-//Pump Controler
+// Pump Controler
 			
-//Pump Controler, considering the delay time
+// Pump Controler, considering the delay time
 // use the bit position to represent the time elapsing
-PUMPCONTROLER = (start -> PUMPCONTROLERUN[0]),
-	PUMPCONTROLERUN[t:PUMPMAXDELAY] = (stop -> PUMPCONTROLER 
+PUMPCONTROLLER = (start -> PUMPCONTROLLERUN[0]),
+	PUMPCONTROLLERUN = (stop -> PUMPCONTROLLER 
 			| pumpcontrollerchan.receive[o:PUMPORDER] -> 
-				(when (o == ON) pumping -> PUMPCONTROLERUN[16+t] 			// 16 comes from 2^(PUMPDELAY-1); assme there is at most one ON message per second
-				| when (o == OFF) pumpOff -> PUMPCONTROLERUN[t] 
-				| when (o == KEEP) keep -> PUMPCONTROLERUN[t]
+				( when (o == ON) pumpOn -> PUMPCONTROLLERUN
+				| when (o == OFF) pumpOff -> PUMPCONTROLLERUN
+				| when (o == KEEP) keep -> PUMPCONTROLLERUN
 				)
-			| tick -> PUMPCONTROLTICK[t]
-			),
-			
-	PUMPCONTROLTICK[t:PUMPMAXDELAY] = (
-			when (t == 0)
-				pumping -> PUMPCONTROLERUN[0]
-			| when (t % 2 == 0)
-				pumping -> PUMPCONTROLERUN[t/2]					
-			| when (t % 2 != 0)
-				pumping -> pumpOn -> PUMPCONTROLERUN[(t-1)/2]
 			).
  
 //Control System - need modified to multi pump on/off 
@@ -169,7 +154,7 @@ CONTROLSYSTEM = (start -> SYSCONTROLRUN[0]),
 
 
 //Composite System
-||ALLSYSTEM = (TIMER || STEAMBOILER || CONTROLSYSTEM || PUMPCONTROLER || WATERSENSOR || STEAMSENSOR || PUMPSENSOR || MANUALCONTROL)
+||ALLSYSTEM = (TIMER || STEAMBOILER || CONTROLSYSTEM || PUMPCONTROLLER || WATERSENSOR || STEAMSENSOR || PUMPSENSOR || MANUALCONTROL)
          /{waterchan/waterchan.{send,receive}, pumpsensorchan/pumpsensorchan.{send,receive}, steamchan/steamchan.{send,receive}, pumpcontrollerchan/pumpcontrollerchan.{send,receive}}.
 	//		<<{start, getWaterQuantity, makedecision, makedecisionoff, makedecisionon, nodecisionresult, pumpcontrollerchan, pumpsensorchan, waterchan[q:Q], steamchan, pumpOn, pumpOff, keep}.
 ||BASICSYSTEM = (ALLSYSTEM || BASIC).
