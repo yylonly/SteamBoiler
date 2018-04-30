@@ -1,4 +1,0 @@
-Copy UPPAAL.app to your /Applications folder.
-
-If you need the command line verifier, copy
-verifyta to any place you want, this is optional.
